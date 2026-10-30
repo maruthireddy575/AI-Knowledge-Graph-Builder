@@ -1,2 +1,185 @@
 # AI-Knowledge-Graph-Builder
-Built an intelligent system that transforms unstructured learning content into structured, interactive knowledge graphs using advanced NLP techniques and modern web technologies.
+
+AI Knowledge Graph Builder is a full-stack web application that automatically transforms unstructured text content into interactive, structured knowledge graphs. It uses advanced NLP techniques to extract concepts, identify relationships, and visualize knowledge as an interactive graph.
+
+Purpose: Help students, researchers, and educators convert raw text into structured, navigable knowledge maps.
+
+Core Workflow:
+Content Input → Concept Extraction → Relationship Mapping → Graph Building → Refinement → Validation → Visualization
+
+Complete Data Flow
+
+┌─────────────────────────────────────────────────────────────┐
+│ 1. User Input (Frontend)                                    │
+│    - Enter topic & content                                  │
+│    - Click "Build Knowledge Graph"                         │
+└─────────────────────────┬───────────────────────────────────┘
+                          │ POST /api/graphs/build
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 2. Backend Processing                                       │
+│                                                             │
+│  ┌──────────────────┐                                       │
+│  │ Extraction Agent │ → Concepts (with frequency, type)    │
+│  └────────┬─────────┘                                       │
+│           ▼                                                 │
+│  ┌──────────────────┐                                       │
+│  │ Relation Agent   │ → Relationships (with strength)      │
+│  └────────┬─────────┘                                       │
+│           ▼                                                 │
+│  ┌──────────────────┐                                       │
+│  │ Graph Builder    │ → Initial graph (nodes + edges)       │
+│  └────────┬─────────┘                                       │
+│           ▼                                                 │
+│  ┌──────────────────┐                                       │
+│  │ Refinement Agent │ → Cleaned graph                       │
+│  └────────┬─────────┘                                       │
+│           ▼                                                 │
+│  ┌──────────────────┐                                       │
+│  │ Validation Agent │ → Quality checklist                   │
+│  └────────┬─────────┘                                       │
+│           ▼                                                 │
+│  ┌──────────────────┐                                       │
+│  │ Database Save    │ → MongoDB storage                     │
+│  └────────┬─────────┘                                       │
+└───────────┼─────────────────────────────────────────────────┘
+            │ JSON Response
+            ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 3. Frontend Display                                         │
+│    - Graph visualization (ForceGraph2D)                    │
+│    - Validation checklist                                   │
+│    - Node/edge details on click                            │
+│    - Export options                                         │
+└─────────────────────────────────────────────────────────────┘
+
+
+## Project Structure
+
+ai-knowledge-graph-builder/
+│
+├── backend/
+│   ├── src/
+│   │   ├── agents/
+│   │   │   ├── diffAgent.js
+│   │   │   ├── extractionAgent.js
+│   │   │   ├── graphBuilderAgent.js
+│   │   │   ├── refinementAgent.js
+│   │   │   ├── relationAgent.js
+│   │   │   └── validationAgent.js
+│   │   │
+│   │   ├── config/
+│   │   │   ├── app.js
+│   │   │   └── database.js
+│   │   │
+│   │   ├── controllers/
+│   │   │   ├── comparisonController.js
+│   │   │   ├── graphController.js
+│   │   │   └── validationController.js
+│   │   │
+│   │   ├── middleware/
+│   │   │   ├── errorHandler.js
+│   │   │   ├── rateLimiter.js
+│   │   │   └── validation.js
+│   │   │
+│   │   ├── models/
+│   │   │   ├── edgeModel.js
+│   │   │   ├── graphModel.js
+│   │   │   ├── nodeModel.js
+│   │   │   └── validationModel.js
+│   │   │
+│   │   ├── routes/
+│   │   │   ├── comparisonRoutes.js
+│   │   │   ├── graphRoutes.js
+│   │   │   └── validationRoutes.js
+│   │   │
+│   │   ├── services/
+│   │   │   ├── databaseService.js
+│   │   │   ├── graphService.js
+│   │   │   ├── nlpService.js
+│   │   │   └── deepseekService.js (optional)
+│   │   │
+│   │   ├── utils/
+│   │   │   ├── constants.js
+│   │   │   ├── helpers.js
+│   │   │   └── logger.js
+│   │   │
+│   │   └── app.js
+│   │
+│   ├── tests/
+│   │   ├── integration/
+│   │   │   └── .gitkeep
+│   │   └── unit/
+│   │       └── .gitkeep
+│   │
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── package.json
+│   └── README.md
+│
+├── frontend/
+│   ├── public/
+│   │   ├── index.html
+│   │   ├── favicon.ico
+│   │   ├── logo192.png
+│   │   ├── logo512.png
+│   │   ├── manifest.json
+│   │   └── robots.txt
+│   │
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── DiffViewer/
+│   │   │   │   ├── DiffControls.jsx
+│   │   │   │   ├── DiffStyles.css
+│   │   │   │   └── DiffViewer.jsx
+│   │   │   │
+│   │   │   ├── GraphHistory/
+│   │   │   │   ├── GraphHistory.jsx
+│   │   │   │   └── HistoryStyles.css
+│   │   │   │
+│   │   │   ├── GraphVisualization/
+│   │   │   │   ├── GraphControls.jsx
+│   │   │   │   ├── GraphStyles.css
+│   │   │   │   └── GraphVisualization.jsx
+│   │   │   │
+│   │   │   ├── TopicInput/
+│   │   │   │   ├── TopicInput.jsx
+│   │   │   │   └── TopicStyles.css
+│   │   │   │
+│   │   │   └── ValidationChecklist/
+│   │   │       ├── ValidationChecklist.jsx
+│   │   │       └── ValidationStyles.css
+│   │   │
+│   │   ├── services/
+│   │   │   ├── api.js
+│   │   │   └── graphUtils.js
+│   │   │
+│   │   ├── App.css
+│   │   ├── App.js
+│   │   ├── index.css
+│   │   ├── index.js
+│   │   └── reportWebVitals.js
+│   │
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── package.json
+│   └── README.md
+│
+├── docs/
+│   ├── screenshots/
+│   │   ├── 01-home.png
+│   │   ├── 02-graph-builder.png
+│   │   ├── 03-visualization.png
+│   │   ├── 04-validation.png
+│   │   ├── 05-diff-viewer.png
+│   │   └── 06-history.png
+│   ├── API.md
+│   └── ARCHITECTURE.md
+│
+├── .gitignore
+├── CONTRIBUTING.md
+├── LICENSE
+└── README.md
+
+
+
